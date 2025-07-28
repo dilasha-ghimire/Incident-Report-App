@@ -6,6 +6,34 @@ html {
   box-sizing: border-box;
 }
 
+.alert-success,
+.alert-fail {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  padding: 0.9rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  min-width: 240px;
+}
+
+.alert-success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #10b981;
+}
+
+.alert-fail {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #f87171;
+}
+
 .home-wrapper {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(to right, #eef2ff, #e0ecff);
@@ -16,12 +44,62 @@ html {
 
 /* Header */
 .home-header {
-  padding: 1.5rem 3rem;
+  padding: 1.5rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap; /* allows wrapping on smaller screens */
   background-color: white;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.home-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap; /* allows wrapping inside */
+}
+
+.home-links a {
+  text-decoration: none;
+  color: #1e3a8a;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  font-size: 1rem;
+}
+
+.home-links a:hover {
+  color: #2563eb;
+}
+
+.signin-btn {
+  background-color: #3b82f6;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.signin-btn:hover {
+  background-color: #1e40af;
+}
+
+/* Responsive adjustments */
+@media (max-width: 670px) {
+  .home-links {
+    align-content: space-around;
+    align-items: flex-end;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .home-header {
+    flex-direction: column;
+  }
 }
 
 .home-logo img {

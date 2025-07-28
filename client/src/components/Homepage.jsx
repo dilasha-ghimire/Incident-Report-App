@@ -27,9 +27,26 @@ const Homepage = () => {
         <div className="home-logo" onClick={() => navigate("/")}>
           <img src="/logo.svg" alt="Logo" />
         </div>
-        <button className="signin-btn" onClick={() => navigate("/login")}>
-          Sign In
-        </button>
+
+        <div className="home-links">
+          <a
+            href="https://softwarica.edu.np/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            College Site
+          </a>
+          <a
+            href="https://c4mpus.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Student Portal
+          </a>
+          <button className="signin-btn" onClick={() => navigate("/login")}>
+            Sign In
+          </button>
+        </div>
       </header>
 
       <main className="home-content">
