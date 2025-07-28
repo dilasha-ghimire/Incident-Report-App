@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import zxcvbn from "zxcvbn";
 import "./Register.css";
 
 const Register = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [alert, setAlert] = useState({ message: "", type: "" });
+  const [passwordStrength, setPasswordStrength] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -78,7 +80,6 @@ const Register = () => {
         </div>
       </header>
 
-      {/* 🔔 Alert Popup */}
       {alert.message && (
         <div className={`alert-${alert.type} alert-popup`}>{alert.message}</div>
       )}
@@ -112,12 +113,30 @@ const Register = () => {
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={form.password}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                const score = zxcvbn(e.target.value).score;
+                setPasswordStrength(score);
+              }}
             />
             <span className="toggle-password" onClick={togglePassword}>
               {showPassword ? "👁️" : "🙈"}
             </span>
           </div>
+
+          {form.password && (
+            <div className="password-strength">
+              <div className={`strength-bar strength-${passwordStrength}`} />
+              <span>
+                {
+                  ["Very Weak", "Weak", "Fair", "Good", "Strong"][
+                    passwordStrength
+                  ]
+                }
+              </span>
+            </div>
+          )}
+
           <button type="submit">Sign Up</button>
         </form>
       </div>

@@ -21,7 +21,7 @@ body {
   flex-direction: row;
   width: 90%;
   max-width: 900px;
-  height: 400px;
+  height: 500px;
   background-color: white;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   margin: 8rem auto;
@@ -124,6 +124,37 @@ body {
   cursor: pointer;
   font-size: 1.1rem;
   user-select: none;
+}
+
+.password-strength {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.strength-bar {
+  height: 8px;
+  width: 100px;
+  border-radius: 4px;
+  background-color: #e2e8f0;
+}
+
+.strength-0 {
+  background-color: #e53e3e;
+}
+.strength-1 {
+  background-color: #ed8936;
+}
+.strength-2 {
+  background-color: #ecc94b;
+}
+.strength-3 {
+  background-color: #38a169;
+}
+.strength-4 {
+  background-color: #3182ce;
 }
 
 /* === Responsive: Tablet & Below (≤ 768px) === */
