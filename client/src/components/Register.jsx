@@ -15,6 +15,16 @@ const Register = () => {
 
   const togglePassword = () => setShowPassword((prev) => !prev);
 
+  const isWeakPassword = (password) => {
+    return (
+      password.length < 8 ||
+      !/[A-Z]/.test(password) ||
+      !/[a-z]/.test(password) ||
+      !/[0-9]/.test(password) ||
+      !/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)
+    );
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -23,8 +33,17 @@ const Register = () => {
       return;
     }
 
+    if (isWeakPassword(form.password)) {
+      setAlert({
+        message:
+          "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
+        type: "fail",
+      });
+      return;
+    }
+
     try {
-      const res = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/api/auth/register`,
         form
       );

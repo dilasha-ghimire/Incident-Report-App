@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
@@ -8,9 +9,28 @@ exports.registerUser = async (req, res) => {
     return res.status(400).json({ error: "All fields are required" });
   }
 
+  const isWeak =
+    password.length < 8 ||
+    !/[A-Z]/.test(password) ||
+    !/[a-z]/.test(password) ||
+    !/[0-9]/.test(password) ||
+    !/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
+
+  if (isWeak) {
+    return res.status(400).json({
+      error:
+        "Password must be at least 8 characters long and include uppercase, lowercase, number, and symbol.",
+    });
+  }
+
   try {
-    const user = await User.create({ username, email, password });
-    res.json(user);
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
+    res.json({ id: user._id, email: user.email });
   } catch (err) {
     res.status(400).json({ error: "User already exists or invalid data" });
   }
