@@ -5,12 +5,15 @@ import "./Register.css";
 
 const Register = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false); // 👁️ visibility state
   const [alert, setAlert] = useState({ message: "", type: "" });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  const togglePassword = () => setShowPassword((prev) => !prev); // 👁️ toggle function
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,13 +31,10 @@ const Register = () => {
     }
   };
 
-  // Auto-hide alert after 3 seconds
-  // Auto-hide alert and redirect after 3 seconds if successful
   useEffect(() => {
     if (alert.message) {
       const timer = setTimeout(() => {
         setAlert({ message: "", type: "" });
-
         if (alert.type === "success") {
           navigate("/login");
         }
@@ -58,9 +58,7 @@ const Register = () => {
 
       {/* 🔔 Alert Popup */}
       {alert.message && (
-        <div className={`alert-${alert.type} alert-popup`}>
-          Registration successful! Redirecting to login page.....
-        </div>
+        <div className={`alert-${alert.type} alert-popup`}>{alert.message}</div>
       )}
 
       <div className="register-form">
@@ -86,13 +84,18 @@ const Register = () => {
             value={form.email}
             onChange={handleChange}
           />
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-          />
+          <div className="password-wrapper">
+            <input
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={form.password}
+              onChange={handleChange}
+            />
+            <span className="toggle-password" onClick={togglePassword}>
+              {showPassword ? "👁️" : "🙈"}
+            </span>
+          </div>
           <button type="submit">Sign Up</button>
         </form>
       </div>

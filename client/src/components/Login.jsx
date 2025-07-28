@@ -5,12 +5,15 @@ import "./Login.css";
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const [alert, setAlert] = useState({ message: "", type: "" });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  const togglePassword = () => setShowPassword((prev) => !prev);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,12 +35,10 @@ const Login = () => {
     }
   };
 
-  // Auto-hide alert and redirect to dashboard after 3 seconds if login succeeds
   useEffect(() => {
     if (alert.message) {
       const timer = setTimeout(() => {
         setAlert({ message: "", type: "" });
-
         if (alert.type === "success") {
           navigate("/dashboard");
         }
@@ -59,7 +60,6 @@ const Login = () => {
         </div>
       </header>
 
-      {/* 🔔 Center Screen Alert */}
       {alert.message && (
         <div className={`alert-${alert.type} alert-popup`}>{alert.message}</div>
       )}
@@ -81,13 +81,18 @@ const Login = () => {
             value={form.email}
             onChange={handleChange}
           />
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-          />
+          <div className="password-wrapper">
+            <input
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={form.password}
+              onChange={handleChange}
+            />
+            <span className="toggle-password" onClick={togglePassword}>
+              {showPassword ? "👁️" : "🙈"}
+            </span>
+          </div>
           <button type="submit">Sign In</button>
         </form>
       </div>
