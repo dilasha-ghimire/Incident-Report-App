@@ -5,7 +5,7 @@ import "./Register.css";
 
 const Register = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
-  const [showPassword, setShowPassword] = useState(false); // 👁️ visibility state
+  const [showPassword, setShowPassword] = useState(false);
   const [alert, setAlert] = useState({ message: "", type: "" });
   const navigate = useNavigate();
 
@@ -13,7 +13,7 @@ const Register = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const togglePassword = () => setShowPassword((prev) => !prev); // 👁️ toggle function
+  const togglePassword = () => setShowPassword((prev) => !prev);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +24,7 @@ const Register = () => {
     }
 
     try {
-      await axios.post("http://localhost:5000/api/auth/register", form);
+      await axios.post("http://192.168.0.102:5000/api/auth/register", form);
       setAlert({ message: "Registration successful!", type: "success" });
     } catch {
       setAlert({ message: "Registration failed!", type: "fail" });
