@@ -1,0 +1,10 @@
+.dashboard-wrapper {
+  font-family: "Segoe UI", sans-serif;
+  background: #f9fafb;
+  min-height: 100vh;
+}
+
+.dashboard-wrapper h1 {
+  font-size: 2rem;
+  color: #1e3a8a;
+}
