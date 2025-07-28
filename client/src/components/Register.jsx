@@ -24,7 +24,10 @@ const Register = () => {
     }
 
     try {
-      await axios.post("http://192.168.0.102:5000/api/auth/register", form);
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/register`,
+        form
+      );
       setAlert({ message: "Registration successful!", type: "success" });
     } catch {
       setAlert({ message: "Registration failed!", type: "fail" });
