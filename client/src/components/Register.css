@@ -1,0 +1,170 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* === Outer Wrapper === */
+.register-wrapper {
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(to right, #f0f4ff, #dbeafe);
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === Unified Split Container === */
+.register-form {
+  display: flex;
+  flex-direction: row;
+  width: 90%;
+  max-width: 900px;
+  height: 400px;
+  background-color: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  margin: 8rem auto;
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+
+/* === Left Section (Welcome) === */
+.register-left {
+  background-color: #3b82f6;
+  color: white;
+  flex: 1 1 300px;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.register-left h2 {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+}
+
+.register-left p {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.register-left button {
+  background-color: rgba(255, 255, 255, 0.15);
+  border: none;
+  padding: 0.75rem 1.2rem;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.register-left button:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* === Right Section (Form) === */
+.register-right {
+  flex: 1 1 300px;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  box-sizing: border-box;
+}
+
+.register-right h2 {
+  color: #1e3a8a;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.register-right input {
+  padding: 0.85rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.register-right button {
+  padding: 0.85rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+  width: 100%;
+}
+
+.register-right button:hover {
+  background-color: #1e40af;
+}
+
+/* === Responsive: Tablet & Below (≤ 768px) === */
+@media (max-width: 768px) {
+  .register-form {
+    flex-direction: column;
+    height: auto;
+    margin: 5rem auto;
+    width: 95%;
+  }
+
+  .register-left,
+  .register-right {
+    padding: 2rem 1rem;
+    width: 100%;
+    height: auto;
+  }
+
+  .register-left h2,
+  .register-right h2 {
+    font-size: 1.3rem;
+  }
+
+  .register-left p {
+    font-size: 0.95rem;
+  }
+
+  .register-right input,
+  .register-right button {
+    font-size: 0.95rem;
+    padding: 0.75rem;
+  }
+
+  .register-left button {
+    font-size: 0.95rem;
+    padding: 0.7rem 1rem;
+  }
+}
+
+/* === Responsive: Phone (≤ 480px) === */
+@media (max-width: 480px) {
+  .register-form {
+    margin: 2rem auto;
+    width: 95%;
+  }
+
+  .register-left h2,
+  .register-right h2 {
+    font-size: 1.2rem;
+  }
+
+  .register-left p {
+    font-size: 0.9rem;
+  }
+
+  .register-right input,
+  .register-right button,
+  .register-left button {
+    font-size: 0.9rem;
+    padding: 0.7rem;
+  }
+}
