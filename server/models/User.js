@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema({
   emailVerified: { type: Boolean, default: false },
   emailOTP: String,
   emailOTPExpires: Date,
+  loginOTP: String,
+  loginOTPExpires: Date,
 });
 
 module.exports = mongoose.model("User", userSchema);

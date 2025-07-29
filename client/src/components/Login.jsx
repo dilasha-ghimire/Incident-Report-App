@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-axios.defaults.withCredentials = true;
 import api from "../api";
 import "./Login.css";
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
-  const [showPassword, setShowPassword] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [stage, setStage] = useState("login"); // 'login' or 'otp'
   const [alert, setAlert] = useState({ message: "", type: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -23,24 +23,26 @@ const Login = () => {
     if (parts.length === 2) return parts.pop().split(";").shift();
   }
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-
     if (!form.email || !form.password) {
       setAlert({ message: "All fields are required", type: "fail" });
       return;
     }
 
     try {
-      const res = await api.post("/api/auth/login", form, {
+      await api.post("/api/auth/login", form, {
         withCredentials: true,
         headers: {
           "X-XSRF-TOKEN": getCookie("XSRF-TOKEN"),
         },
       });
-      localStorage.setItem("token", res.data.token);
 
-      setAlert({ message: "Login successful!", type: "success" });
+      setAlert({
+        message: "OTP sent to your email. Please verify.",
+        type: "success",
+      });
+      setStage("otp");
     } catch (err) {
       const message =
         err.response?.data?.error || "Login failed. Please try again.";
@@ -48,21 +50,36 @@ const Login = () => {
     }
   };
 
+  const handleVerifyOTP = async (e) => {
+    e.preventDefault();
+    if (!otp) {
+      setAlert({ message: "OTP is required", type: "fail" });
+      return;
+    }
+
+    try {
+      const res = await api.post(
+        "/api/auth/verify-login-otp",
+        { email: form.email, otp },
+        {
+          withCredentials: true,
+          headers: {
+            "X-XSRF-TOKEN": getCookie("XSRF-TOKEN"),
+          },
+        }
+      );
+
+      localStorage.setItem("token", res.data.token);
+      setAlert({ message: "Login successful!", type: "success" });
+      setTimeout(() => navigate("/dashboard"), 2000);
+    } catch {
+      setAlert({ message: "Invalid or expired OTP", type: "fail" });
+    }
+  };
+
   useEffect(() => {
     api.get("/");
   }, []);
-
-  useEffect(() => {
-    if (alert.message) {
-      const timer = setTimeout(() => {
-        setAlert({ message: "", type: "" });
-        if (alert.type === "success") {
-          navigate("/dashboard");
-        }
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [alert, navigate]);
 
   return (
     <div className="login-wrapper">
@@ -90,27 +107,49 @@ const Login = () => {
           </p>
         </div>
 
-        <form className="login-right" onSubmit={handleSubmit}>
-          <h2>Sign In</h2>
-          <input
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-          />
-          <div className="password-wrapper">
-            <input
-              name="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              value={form.password}
-              onChange={handleChange}
-            />
-            <span className="toggle-password" onClick={togglePassword}>
-              {showPassword ? "👁️" : "🙈"}
-            </span>
-          </div>
-          <button type="submit">Sign In</button>
+        <form
+          className="login-right"
+          onSubmit={stage === "login" ? handleLogin : handleVerifyOTP}
+        >
+          <h2>{stage === "login" ? "Sign In" : "Enter OTP"}</h2>
+
+          {stage === "login" && (
+            <>
+              <input
+                name="email"
+                placeholder="Email"
+                value={form.email}
+                onChange={handleChange}
+              />
+              <div className="password-wrapper">
+                <input
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={form.password}
+                  onChange={handleChange}
+                />
+                <span className="toggle-password" onClick={togglePassword}>
+                  {showPassword ? "👁️" : "🙈"}
+                </span>
+              </div>
+            </>
+          )}
+
+          {stage === "otp" && (
+            <>
+              <input
+                name="otp"
+                placeholder="Enter OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+              />
+            </>
+          )}
+
+          <button type="submit">
+            {stage === "login" ? "Sign In" : "Verify OTP"}
+          </button>
         </form>
       </div>
     </div>
