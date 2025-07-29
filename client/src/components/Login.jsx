@@ -30,8 +30,10 @@ const Login = () => {
       );
       localStorage.setItem("token", res.data.token);
       setAlert({ message: "Login successful!", type: "success" });
-    } catch {
-      setAlert({ message: "Login failed!", type: "fail" });
+    } catch (err) {
+      const message =
+        err.response?.data?.error || "Login failed. Please try again.";
+      setAlert({ message, type: "fail" });
     }
   };
 

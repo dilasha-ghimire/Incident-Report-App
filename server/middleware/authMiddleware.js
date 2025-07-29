@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const rateLimit = require("express-rate-limit");
 
 exports.protect = (req, res, next) => {
   const auth = req.headers.authorization;
@@ -14,3 +15,9 @@ exports.protect = (req, res, next) => {
     res.status(401).json({ error: "Invalid token" });
   }
 };
+
+exports.loginRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { error: "Too many login attempts. Please try again later." },
+});

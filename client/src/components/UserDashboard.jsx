@@ -46,6 +46,9 @@ const UserDashboard = () => {
         {userInfo ? (
           <>
             <p>
+              <strong>Username:</strong> {userInfo.username}
+            </p>
+            <p>
               <strong>User ID:</strong> {userInfo.id}
             </p>
             <p>
