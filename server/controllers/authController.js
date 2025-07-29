@@ -60,18 +60,25 @@ exports.loginUser = async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) return res.status(404).json({ error: "User not found" });
 
+  if (!user.emailVerified) {
+    return res.status(403).json({ error: "Email is not verified" });
+  }
+
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     return res.status(401).json({ error: "Invalid credentials" });
   }
 
-  const token = jwt.sign(
-    { id: user._id, username: user.username, role: user.role },
-    process.env.JWT_SECRET
-  );
-  res.json({
-    token,
-    user: { id: user._id, username: user.username, role: user.role },
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  user.loginOTP = otp;
+  user.loginOTPExpires = Date.now() + 10 * 60 * 1000;
+  await user.save();
+
+  await sendEmailOTP(email, otp);
+
+  res.status(200).json({
+    message: "OTP sent to email. Please verify to complete login.",
+    userId: user._id,
   });
 };
 
@@ -98,4 +105,33 @@ exports.verifyEmail = async (req, res) => {
   await user.save();
 
   res.json({ message: "Email verified successfully" });
+};
+
+exports.verifyLoginOTP = async (req, res) => {
+  const { email, otp } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  if (
+    user.loginOTP !== otp ||
+    !user.loginOTPExpires ||
+    user.loginOTPExpires < Date.now()
+  ) {
+    return res.status(400).json({ error: "Invalid or expired OTP" });
+  }
+
+  user.loginOTP = null;
+  user.loginOTPExpires = null;
+  await user.save();
+
+  const token = jwt.sign(
+    { id: user._id, username: user.username, role: user.role },
+    process.env.JWT_SECRET
+  );
+
+  res.json({
+    token,
+    user: { id: user._id, username: user.username, role: user.role },
+  });
 };
