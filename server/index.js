@@ -20,12 +20,14 @@ const allowedOrigins = [
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
+      callback(null, true);
+    } else {
+      console.error("Blocked by CORS:", origin);
+      callback(new Error("Not allowed by CORS"));
     }
-    return callback(new Error("Not allowed by CORS"));
   },
   credentials: true,
-  methods: ["GET", "POST", "OPTIONS"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "X-XSRF-TOKEN"],
 };
 
@@ -40,7 +42,7 @@ app.use((req, res, next) => {
     const token = req.csrfToken();
     res.cookie("XSRF-TOKEN", token, {
       httpOnly: false,
-      secure: false, // Set to true when using HTTPS
+      secure: false,
       sameSite: "Strict",
     });
   } catch (err) {}
@@ -54,7 +56,6 @@ mongoose
 
 app.use("/api/auth", authRoutes);
 app.use("/api/complaints", complaintRoutes);
-
 app.get("/", (req, res) => res.send("Server running"));
 
 const PORT = process.env.PORT || 5000;

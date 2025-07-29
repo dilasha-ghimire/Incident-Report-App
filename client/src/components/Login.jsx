@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+axios.defaults.withCredentials = true;
+import api from "../api";
 import "./Login.css";
 
 const Login = () => {
@@ -15,6 +17,12 @@ const Login = () => {
 
   const togglePassword = () => setShowPassword((prev) => !prev);
 
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -24,11 +32,14 @@ const Login = () => {
     }
 
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
-        form
-      );
+      const res = await api.post("/api/auth/login", form, {
+        withCredentials: true,
+        headers: {
+          "X-XSRF-TOKEN": getCookie("XSRF-TOKEN"),
+        },
+      });
       localStorage.setItem("token", res.data.token);
+
       setAlert({ message: "Login successful!", type: "success" });
     } catch (err) {
       const message =
@@ -36,6 +47,10 @@ const Login = () => {
       setAlert({ message, type: "fail" });
     }
   };
+
+  useEffect(() => {
+    api.get("/");
+  }, []);
 
   useEffect(() => {
     if (alert.message) {

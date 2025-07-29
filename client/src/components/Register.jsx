@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import zxcvbn from "zxcvbn";
+axios.defaults.withCredentials = true;
+import api from "../api";
 import "./Register.css";
 
 const Register = () => {
@@ -27,6 +29,12 @@ const Register = () => {
     );
   };
 
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -45,15 +53,22 @@ const Register = () => {
     }
 
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/auth/register`,
-        form
-      );
+      await api.post("/api/auth/register", form, {
+        withCredentials: true,
+        headers: {
+          "X-XSRF-TOKEN": getCookie("XSRF-TOKEN"),
+        },
+      });
+
       setAlert({ message: "Registration successful!", type: "success" });
     } catch {
       setAlert({ message: "Registration failed!", type: "fail" });
     }
   };
+
+  useEffect(() => {
+    api.get("/");
+  }, []);
 
   useEffect(() => {
     if (alert.message) {
