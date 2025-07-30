@@ -69,9 +69,15 @@ const Login = () => {
         }
       );
 
-      localStorage.setItem("token", res.data.token);
       setAlert({ message: "Login successful!", type: "success" });
-      setTimeout(() => navigate("/dashboard"), 2000);
+
+      // Redirect based on role
+      const role = res.data.user?.role;
+      if (role === "admin") {
+        setTimeout(() => navigate("/admin/dashboard"), 2000);
+      } else {
+        setTimeout(() => navigate("/dashboard"), 2000);
+      }
     } catch {
       setAlert({ message: "Invalid or expired OTP", type: "fail" });
     }

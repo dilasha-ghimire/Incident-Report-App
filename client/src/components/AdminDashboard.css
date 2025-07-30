@@ -1,0 +1,135 @@
+/* ====== Admin Dashboard Styling ====== */
+
+.admindashboard-container {
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(to right, #f0f4ff, #dbeafe);
+  min-height: 100vh;
+  padding: 3rem 1.5rem;
+  box-sizing: border-box;
+}
+
+.admindashboard-header {
+  background: white;
+  padding: 1.5rem 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  max-width: 1200px;
+  margin: 0 auto 2rem auto;
+  text-align: center;
+}
+
+.admindashboard-header h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin: 0;
+}
+
+.admindashboard-filters {
+  max-width: 1200px;
+  margin: 0 auto 2rem auto;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.admindashboard-filters input,
+.admindashboard-filters select {
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  min-width: 220px;
+  background-color: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.admindashboard-table-wrapper {
+  overflow-x: auto;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.admindashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admindashboard-table th,
+.admindashboard-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  font-size: 0.95rem;
+  color: #1f2937;
+}
+
+.admindashboard-table th {
+  background-color: #f1f5f9;
+  font-weight: 600;
+  color: #1e3a8a;
+}
+
+.admindashboard-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.admindashboard-status-dropdown {
+  padding: 0.5rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #f0f4ff;
+  color: #1e3a8a;
+  width: 100%;
+  max-width: 200px;
+}
+
+@media (max-width: 768px) {
+  .admindashboard-container {
+    padding: 2rem 1rem;
+    overflow-x: hidden;
+  }
+
+  .admindashboard-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .admindashboard-filters {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    padding: 0 1rem;
+    box-sizing: border-box;
+  }
+
+  .admindashboard-filters input,
+  .admindashboard-filters select {
+    width: 100%;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+  }
+
+  .admindashboard-table-wrapper {
+    padding: 0.5rem;
+    overflow-x: auto;
+  }
+
+  .admindashboard-table th,
+  .admindashboard-table td {
+    padding: 0.6rem;
+    font-size: 0.85rem;
+  }
+
+  .admindashboard-status-dropdown {
+    font-size: 0.85rem;
+    padding: 0.4rem;
+    width: 100%;
+    max-width: 100%;
+  }
+}
