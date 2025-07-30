@@ -1,5 +1,6 @@
 const Complaint = require("../models/Complaint");
 const User = require("../models/User");
+const logger = require("../middleware/logger");
 
 exports.getAllReports = async (req, res) => {
   try {
@@ -20,7 +21,9 @@ exports.updateReportStatus = async (req, res) => {
 
     report.status = status;
     await report.save();
-
+    logger.info(
+      `ADMIN ${req.user.username} set status of report ${id} to ${status}`
+    );
     res.json({ message: "Status updated" });
   } catch {
     res.status(500).json({ error: "Failed to update report" });
@@ -44,7 +47,7 @@ exports.updateUser = async (req, res) => {
     user.email = email;
     user.role = role;
     await user.save();
-
+    logger.info(`ADMIN ${req.user.username} updated user ${user.email}`);
     res.json({ message: "User updated" });
   } catch {
     res.status(500).json({ error: "Update failed" });
@@ -54,5 +57,6 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   const { id } = req.params;
   await User.findByIdAndDelete(id);
+  logger.info(`ADMIN ${req.user.username} deleted user ${deletedUser?.email}`);
   res.json({ message: "User deleted" });
 };

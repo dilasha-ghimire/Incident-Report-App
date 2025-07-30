@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const { sendEmailOTP } = require("../middleware/mailer");
+const logger = require("../middleware/logger");
 
 exports.registerUser = async (req, res) => {
   const { username, email, password } = req.body;
@@ -41,7 +42,7 @@ exports.registerUser = async (req, res) => {
     });
 
     await sendEmailOTP(email, otp);
-
+    logger.info(`REGISTER: ${email}`);
     res.status(201).json({
       message: "User registered. Please verify your email with the OTP sent.",
     });
@@ -75,7 +76,7 @@ exports.loginUser = async (req, res) => {
   await user.save();
 
   await sendEmailOTP(email, otp);
-
+  logger.info(`LOGIN ATTEMPT: ${email}`);
   res.status(200).json({
     message: "OTP sent to email. Please verify to complete login.",
     userId: user._id,
@@ -136,7 +137,7 @@ exports.verifyLoginOTP = async (req, res) => {
     sameSite: "Strict",
     maxAge: 24 * 60 * 60 * 1000, // 1 day
   });
-
+  logger.info(`LOGIN SUCCESS: ${user.email}`);
   res.json({
     message: "Login successful",
     user: { id: user._id, username: user.username, role: user.role },
@@ -160,6 +161,7 @@ exports.getMe = async (req, res) => {
 };
 
 exports.logoutUser = (req, res) => {
+  logger.info(`LOGOUT: ${req.user?.username || "Unknown"}`);
   res.clearCookie("token", {
     httpOnly: true,
     secure: false, // or true in production
@@ -181,7 +183,7 @@ exports.updateProfile = async (req, res) => {
     user.username = username;
     user.email = email;
     await user.save();
-
+    logger.info(`PROFILE UPDATE: ${req.user.username}`);
     res.json({ message: "Profile updated successfully" });
   } catch (err) {
     res.status(500).json({ error: "Failed to update profile" });
@@ -233,6 +235,6 @@ exports.changePassword = async (req, res) => {
   user.password = hashedNewPassword;
 
   await user.save();
-
+  logger.info(`PASSWORD CHANGE: ${req.user.username}`);
   res.json({ message: "Password changed successfully" });
 };

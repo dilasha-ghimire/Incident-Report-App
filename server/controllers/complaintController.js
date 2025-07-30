@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const sanitizeHtml = require("sanitize-html");
 const Complaint = require("../models/Complaint");
+const logger = require("../middleware/logger");
 
 exports.createComplaint = async (req, res) => {
   try {
@@ -25,7 +26,7 @@ exports.createComplaint = async (req, res) => {
       description,
       image,
     });
-
+    logger.info(`COMPLAINT SUBMIT: ${req.user.username} - ${title}`);
     res.status(201).json(complaint);
   } catch (err) {
     res.status(400).json({ error: "Failed to create complaint" });
@@ -81,6 +82,7 @@ exports.updateComplaint = async (req, res) => {
     }
 
     await complaint.save();
+    logger.info(`COMPLAINT UPDATE: ${req.user.username} - ${complaint._id}`);
     res.status(200).json(complaint);
   } catch (err) {
     console.error("Update error:", err);
