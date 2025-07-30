@@ -8,6 +8,7 @@ const sanitizeInputs = require("./middleware/sanitize");
 
 const authRoutes = require("./routes/auth");
 const complaintRoutes = require("./routes/complaint");
+const adminRoutes = require("./routes/admin");
 
 const app = express();
 app.use(express.json());
@@ -59,6 +60,8 @@ mongoose
 
 app.use("/api/auth", authRoutes);
 app.use("/api/complaints", complaintRoutes);
+app.use("/api/admin", adminRoutes);
+
 app.get("/", (req, res) => res.send("Server running"));
 
 const PORT = process.env.PORT || 5000;
