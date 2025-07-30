@@ -1,23 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../api";
 import "./UserDashboard.css";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState(null);
 
-  // 👤 Get token and decode payload
-  const token = localStorage.getItem("token");
-  let userInfo = null;
+  useEffect(() => {
+    api
+      .get("/api/auth/me", { withCredentials: true })
+      .then((res) => setUserInfo(res.data))
+      .catch(() => setUserInfo(null));
+  }, []);
 
-  try {
-    if (token) {
-      const base64Payload = token.split(".")[1];
-      const decodedPayload = atob(base64Payload);
-      userInfo = JSON.parse(decodedPayload);
+  const handleLogout = async () => {
+    try {
+      const getCookie = (name) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+      };
+
+      const xsrfToken = getCookie("XSRF-TOKEN");
+
+      await api.post(
+        "/api/auth/logout",
+        {},
+        {
+          withCredentials: true,
+          headers: {
+            "X-XSRF-TOKEN": xsrfToken,
+          },
+        }
+      );
+
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout failed", err);
     }
-  } catch {
-    userInfo = null;
-  }
+  };
 
   return (
     <div className="dashboard-wrapper">
@@ -29,13 +51,7 @@ const UserDashboard = () => {
           <button className="signin-btn" onClick={() => navigate("/profile")}>
             Profile
           </button>
-          <button
-            className="signin-btn"
-            onClick={() => {
-              localStorage.removeItem("token");
-              navigate("/login");
-            }}
-          >
+          <button className="signin-btn" onClick={handleLogout}>
             Logout
           </button>
         </div>

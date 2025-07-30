@@ -130,8 +130,36 @@ exports.verifyLoginOTP = async (req, res) => {
     process.env.JWT_SECRET
   );
 
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: false, // ❌ Only set to true when using HTTPS
+    sameSite: "Strict",
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+  });
+
   res.json({
-    token,
+    message: "Login successful",
     user: { id: user._id, username: user.username, role: user.role },
   });
+};
+
+exports.getMe = (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  res.json({
+    id: req.user.id,
+    username: req.user.username,
+    role: req.user.role,
+  });
+};
+
+exports.logoutUser = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: false, // or true in production
+    sameSite: "Strict",
+  });
+  res.json({ message: "Logged out" });
 };

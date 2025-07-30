@@ -3,12 +3,15 @@ const { body } = require("express-validator");
 const router = express.Router();
 const { loginRateLimiter } = require("../middleware/authMiddleware");
 const validate = require("../middleware/validate");
+const { protect } = require("../middleware/authMiddleware");
 
 const {
   registerUser,
   loginUser,
   verifyEmail,
   verifyLoginOTP,
+  getMe,
+  logoutUser,
 } = require("../controllers/authController");
 
 router.post(
@@ -34,5 +37,7 @@ router.post(
 router.post("/verify-email", verifyEmail);
 router.post("/login", loginRateLimiter, loginUser);
 router.post("/verify-login-otp", verifyLoginOTP);
+router.get("/me", protect, getMe);
+router.post("/logout", logoutUser);
 
 module.exports = router;
