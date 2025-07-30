@@ -12,6 +12,7 @@ const { protect } = require("../middleware/authMiddleware");
 const upload = require("../middleware/upload");
 
 const csrfProtection = csrf({ cookie: true });
+const { validateComplaint } = require("../middleware/validateComplaint");
 
 const uploadWithCSRF = [
   upload.single("image"),
@@ -20,8 +21,20 @@ const uploadWithCSRF = [
   },
 ];
 
-router.post("/", protect, ...uploadWithCSRF, createComplaint);
-router.patch("/:id", protect, ...uploadWithCSRF, updateComplaint);
+router.post(
+  "/",
+  protect,
+  validateComplaint,
+  ...uploadWithCSRF,
+  createComplaint
+);
+router.patch(
+  "/:id",
+  protect,
+  validateComplaint,
+  ...uploadWithCSRF,
+  updateComplaint
+);
 router.get("/", protect, csrfProtection, getUserComplaints);
 
 module.exports = router;
