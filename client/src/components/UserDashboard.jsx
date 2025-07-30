@@ -4,22 +4,24 @@ import api from "../api";
 import "./UserDashboard.css";
 
 const UserDashboard = () => {
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
   const [complaints, setComplaints] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
     type: "",
     description: "",
     image: null,
+    previewImage: null,
   });
 
   useEffect(() => {
     api.get("/api/auth/me", { withCredentials: true }).then((res) => {
       setUserInfo(res.data);
     });
-
     fetchComplaints();
   }, []);
 
@@ -32,36 +34,93 @@ const UserDashboard = () => {
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
+    if (files) {
+      setFormData((prev) => ({
+        ...prev,
+        image: files[0],
+        previewImage: URL.createObjectURL(files[0]),
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleRemoveImage = () => {
     setFormData((prev) => ({
       ...prev,
-      [name]: files ? files[0] : value,
+      image: null,
+      previewImage: null,
     }));
   };
 
   const handleSubmit = async () => {
+    if (!formData.title || !formData.type || !formData.description) {
+      setAlert({ message: "Please fill in all fields.", type: "fail" });
+      return;
+    }
     try {
       const payload = new FormData();
       payload.append("title", formData.title);
       payload.append("type", formData.type);
       payload.append("description", formData.description);
-      if (formData.image) payload.append("image", formData.image);
+
+      if (formData.image) {
+        payload.append("image", formData.image);
+      } else if (selectedComplaint && !formData.previewImage) {
+        payload.append("removeImage", "true");
+      }
 
       const xsrf = document.cookie
         .split("; ")
         .find((row) => row.startsWith("XSRF-TOKEN="))
         ?.split("=")[1];
 
-      await api.post("/api/complaints", payload, {
-        withCredentials: true,
-        headers: { "X-XSRF-TOKEN": xsrf },
-      });
+      if (selectedComplaint && selectedComplaint.status === "Pending") {
+        await api.patch(`/api/complaints/${selectedComplaint._id}`, payload, {
+          withCredentials: true,
+          headers: { "X-XSRF-TOKEN": xsrf },
+        });
+      } else {
+        await api.post("/api/complaints", payload, {
+          withCredentials: true,
+          headers: { "X-XSRF-TOKEN": xsrf },
+        });
+      }
 
       fetchComplaints();
+      setAlert({
+        message: selectedComplaint
+          ? "Incident updated successfully."
+          : "Incident created successfully.",
+        type: "success",
+      });
+      setTimeout(() => setAlert({ message: "", type: "" }), 3000);
       setShowModal(false);
-      setFormData({ title: "", type: "", description: "", image: null });
+      setSelectedComplaint(null);
+      setFormData({
+        title: "",
+        type: "",
+        description: "",
+        image: null,
+        previewImage: null,
+      });
     } catch (err) {
       console.error("Submit failed", err);
     }
+  };
+
+  const handleViewMore = (complaint) => {
+    setSelectedComplaint(complaint);
+    setFormData({
+      title: complaint.title,
+      type: complaint.type,
+      description: complaint.description,
+      image: null,
+      previewImage: complaint.image
+        ? `${import.meta.env.VITE_API_BASE_URL}/uploads/${complaint.image}`
+        : null,
+    });
+    setShowModal(true);
   };
 
   const handleLogout = async () => {
@@ -81,6 +140,9 @@ const UserDashboard = () => {
     navigate("/login");
   };
 
+  const isEditable =
+    !selectedComplaint || selectedComplaint.status === "Pending";
+
   return (
     <div className="dashboard-wrapper">
       <header className="home-header">
@@ -97,73 +159,140 @@ const UserDashboard = () => {
         </div>
       </header>
 
+      {alert.message && (
+        <div className={`alert-${alert.type} alert-popup`}>{alert.message}</div>
+      )}
+
       <main className="dashboard-main">
         <div className="dashboard-header">
           <h1>User Dashboard</h1>
-          <button className="submit-btn" onClick={() => setShowModal(true)}>
+          <button
+            className="submit-btn"
+            onClick={() => {
+              setSelectedComplaint(null);
+              setFormData({
+                title: "",
+                type: "",
+                description: "",
+                image: null,
+                previewImage: null,
+              });
+              setShowModal(true);
+            }}
+          >
             📥 Submit Incident
           </button>
         </div>
 
         {showModal && (
           <div className="modal">
-            <h3>Submit Incident</h3>
+            <h3>
+              {selectedComplaint ? "View / Edit Incident" : "Submit Incident"}
+            </h3>
             <input
               name="title"
               placeholder="Title"
               value={formData.title}
               onChange={handleInputChange}
+              disabled={!isEditable}
             />
             <input
               name="type"
               placeholder="Type"
               value={formData.type}
               onChange={handleInputChange}
+              disabled={!isEditable}
             />
             <textarea
               name="description"
               placeholder="Description"
               value={formData.description}
               onChange={handleInputChange}
+              disabled={!isEditable}
             />
             <input
               type="file"
               name="image"
               accept="image/*"
               onChange={handleInputChange}
+              disabled={!isEditable}
             />
-            <button onClick={handleSubmit}>Submit</button>
-            <button onClick={() => setShowModal(false)}>Cancel</button>
+            {formData.previewImage && (
+              <div>
+                <img
+                  src={formData.previewImage}
+                  alt="preview"
+                  style={{ maxWidth: "100%" }}
+                />
+                {isEditable && (
+                  <p
+                    onClick={handleRemoveImage}
+                    style={{
+                      color: "#2563eb",
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Remove Image
+                  </p>
+                )}
+              </div>
+            )}
+            <div className="modal-buttons">
+              {isEditable && (
+                <button onClick={handleSubmit}>
+                  {selectedComplaint ? "Update" : "Submit"}
+                </button>
+              )}
+              <button className="cancel" onClick={() => setShowModal(false)}>
+                Close
+              </button>
+            </div>
           </div>
         )}
 
-        <h2 style={{ marginTop: "3rem" }}>📋 My Incidents</h2>
-        {complaints.map((c) => (
-          <div
-            key={c._id}
-            style={{
-              borderBottom: "1px solid #ccc",
-              margin: "1rem auto",
-              maxWidth: "600px",
-            }}
-          >
-            <h3>{c.title}</h3>
-            <p>
-              <strong>Type:</strong> {c.type}
-            </p>
-            <p>{c.description}</p>
-            <p>
-              <strong>Status:</strong> {c.status}
-            </p>
-            {c.image && (
-              <img
-                src={`${import.meta.env.VITE_API_BASE_URL}/uploads/${c.image}`}
-                alt="incident"
-                style={{ maxWidth: "100%", maxHeight: "200px" }}
-              />
-            )}
-          </div>
-        ))}
+        <h2>📋 My Incidents</h2>
+        <div className="incident-list">
+          {complaints.map((c) => (
+            <div key={c._id} className="incident-card">
+              <div className="incident-info">
+                <h3>{c.title}</h3>
+                <p>
+                  <strong>Type:</strong> {c.type}
+                </p>
+                <p>
+                  <strong>Status:</strong>{" "}
+                  <span
+                    style={{
+                      color:
+                        c.status === "Pending"
+                          ? "#2563eb"
+                          : c.status === "In Progress"
+                          ? "#ca8a04"
+                          : c.status === "Resolved"
+                          ? "#16a34a"
+                          : c.status === "Rejected"
+                          ? "#dc2626"
+                          : "#374151",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {c.status}
+                  </span>
+                </p>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  <button onClick={() => handleViewMore(c)}>View More</button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </main>
     </div>
   );

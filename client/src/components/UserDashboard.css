@@ -66,6 +66,7 @@
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
 }
 
 .modal input,
@@ -76,21 +77,46 @@
   border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.modal input[type="file"] {
+  padding: 0.4rem;
+  font-size: 0.95rem;
+  border: 1px solid #d1d5db;
+  background-color: #f9fafb;
+  cursor: pointer;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
 }
 
 .modal button {
   padding: 0.6rem 1.2rem;
-  margin-right: 0.5rem;
   background-color: #2563eb;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
+  font-size: 0.95rem;
 }
 
 .modal button:hover {
   background-color: #1d4ed8;
+}
+
+.modal button.cancel {
+  background-color: #e5e7eb;
+  color: #111827;
+}
+
+.modal button.cancel:hover {
+  background-color: #d1d5db;
 }
 
 /* ========= Incident Cards ========= */
@@ -120,6 +146,22 @@ main h2 {
   color: #374151;
 }
 
+.incident-card button {
+  margin-top: 0.5rem;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.incident-card button:hover {
+  background-color: #059669;
+}
+
 .incident-card img {
   max-width: 100%;
   max-height: 200px;
@@ -127,79 +169,7 @@ main h2 {
   border-radius: 6px;
 }
 
-/* Modal Overlay Styling */
-.modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 999;
-  background: white;
-  width: 90%;
-  max-width: 500px;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
-}
-
-/* Input Styling */
-.modal input,
-.modal textarea {
-  width: 100%;
-  padding: 0.75rem;
-  margin-bottom: 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 1rem;
-  box-sizing: border-box;
-}
-
-/* Styled File Upload Field */
-.modal input[type="file"] {
-  padding: 0.4rem;
-  font-size: 0.95rem;
-  border: 1px solid #d1d5db;
-  background-color: #f9fafb;
-  cursor: pointer;
-}
-
-/* Button Group */
-.modal-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-
-/* Modal Buttons */
-.modal button {
-  padding: 0.6rem 1.2rem;
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 0.95rem;
-}
-
-.modal button:hover {
-  background-color: #1d4ed8;
-}
-
-.modal button.cancel {
-  background-color: #e5e7eb;
-  color: #111827;
-}
-
-.modal button.cancel:hover {
-  background-color: #d1d5db;
-}
-
 /* ========= RESPONSIVE BREAKPOINTS ========= */
-
-/* ≤ 1200px (large laptops/tablets) */
 @media (max-width: 1200px) {
   .dashboard-header {
     max-width: 95%;
@@ -211,7 +181,6 @@ main h2 {
   }
 }
 
-/* ≤ 750px (small laptops/tablets) */
 @media (max-width: 750px) {
   .dashboard-header {
     flex-direction: column;
@@ -229,7 +198,6 @@ main h2 {
   }
 }
 
-/* ≤ 600px (mobile phones) */
 @media (max-width: 600px) {
   .dashboard-header h1 {
     font-size: 1.5rem;
