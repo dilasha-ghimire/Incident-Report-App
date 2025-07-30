@@ -1,10 +1,21 @@
 const fs = require("fs");
 const path = require("path");
+const sanitizeHtml = require("sanitize-html");
 const Complaint = require("../models/Complaint");
 
 exports.createComplaint = async (req, res) => {
   try {
-    const { title, type, description } = req.body;
+    let title = String(req.body.title || "").trim();
+    let type = String(req.body.type || "").trim();
+    let description = String(req.body.description || "").trim();
+
+    title = sanitizeHtml(title, { allowedTags: [], allowedAttributes: {} });
+    type = sanitizeHtml(type, { allowedTags: [], allowedAttributes: {} });
+    description = sanitizeHtml(description, {
+      allowedTags: [],
+      allowedAttributes: {},
+    });
+
     const image = req.file ? req.file.filename : null;
 
     const complaint = await Complaint.create({
@@ -34,12 +45,27 @@ exports.updateComplaint = async (req, res) => {
         .status(400)
         .json({ message: "Only pending complaints can be edited" });
 
-    // Update fields
-    complaint.title = req.body.title || complaint.title;
-    complaint.type = req.body.type || complaint.type;
-    complaint.description = req.body.description || complaint.description;
+    if (req.body.title) {
+      complaint.title = sanitizeHtml(String(req.body.title).trim(), {
+        allowedTags: [],
+        allowedAttributes: {},
+      });
+    }
 
-    // If a new image is uploaded, replace the old one
+    if (req.body.type) {
+      complaint.type = sanitizeHtml(String(req.body.type).trim(), {
+        allowedTags: [],
+        allowedAttributes: {},
+      });
+    }
+
+    if (req.body.description) {
+      complaint.description = sanitizeHtml(
+        String(req.body.description).trim(),
+        { allowedTags: [], allowedAttributes: {} }
+      );
+    }
+
     if (req.file) {
       if (complaint.image) {
         const oldPath = path.join(__dirname, "..", "uploads", complaint.image);
@@ -48,7 +74,6 @@ exports.updateComplaint = async (req, res) => {
       complaint.image = req.file.filename;
     }
 
-    // If removeImage is explicitly sent AND no new file is uploaded
     if (req.body.removeImage === "true" && !req.file && complaint.image) {
       const oldPath = path.join(__dirname, "..", "uploads", complaint.image);
       if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
