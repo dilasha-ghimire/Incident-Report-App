@@ -95,6 +95,8 @@ This repository contains the **Incident Report App**, a robust MERN-stack applic
 - Clickjacking protection via Helmet middleware
 - NoSQL injection prevention via strict query handling
 
+---
+
 ## 🚀 Getting Started
 
 ### 1️⃣ Prerequisites
