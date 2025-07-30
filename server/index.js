@@ -35,6 +35,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use("/uploads", express.static("uploads"));
 
 const csrfProtection = csrf({ cookie: true });
 app.use(csrfProtection);

@@ -57,3 +57,12 @@ exports.updateComplaint = async (req, res) => {
     res.status(500).json({ error: "Failed to update complaint" });
   }
 };
+
+exports.getUserComplaints = async (req, res) => {
+  try {
+    const complaints = await Complaint.find({ user: req.user.id });
+    res.json(complaints);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch complaints" });
+  }
+};

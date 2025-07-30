@@ -1,10 +1,253 @@
+/* ========= Base Layout ========= */
 .dashboard-wrapper {
   font-family: "Segoe UI", sans-serif;
   background: #f9fafb;
   min-height: 100vh;
+  padding-bottom: 5rem;
 }
 
-.dashboard-wrapper h1 {
-  font-size: 2rem;
+.dashboard-main {
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+/* ========= Header Bar ========= */
+.dashboard-header {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto 2rem auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dashboard-header h1 {
+  font-size: 1.8rem;
   color: #1e3a8a;
+  margin: 0;
+  flex: 1;
+}
+
+.submit-btn {
+  background-color: #2563eb;
+  color: white;
+  font-size: 1rem;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.submit-btn:hover {
+  background-color: #1d4ed8;
+}
+
+/* ========= Modal Form ========= */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+  background: white;
+  width: 90%;
+  max-width: 500px;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal input,
+.modal textarea {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.modal button {
+  padding: 0.6rem 1.2rem;
+  margin-right: 0.5rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.modal button:hover {
+  background-color: #1d4ed8;
+}
+
+/* ========= Incident Cards ========= */
+main h2 {
+  margin-top: 2rem;
+  color: #374151;
+}
+
+.incident-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem auto;
+  width: 100%;
+  max-width: 600px;
+  text-align: left;
+}
+
+.incident-card h3 {
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.incident-card p {
+  margin: 0.25rem 0;
+  color: #374151;
+}
+
+.incident-card img {
+  max-width: 100%;
+  max-height: 200px;
+  margin-top: 0.5rem;
+  border-radius: 6px;
+}
+
+/* Modal Overlay Styling */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+  background: white;
+  width: 90%;
+  max-width: 500px;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+}
+
+/* Input Styling */
+.modal input,
+.modal textarea {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* Styled File Upload Field */
+.modal input[type="file"] {
+  padding: 0.4rem;
+  font-size: 0.95rem;
+  border: 1px solid #d1d5db;
+  background-color: #f9fafb;
+  cursor: pointer;
+}
+
+/* Button Group */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+/* Modal Buttons */
+.modal button {
+  padding: 0.6rem 1.2rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.modal button:hover {
+  background-color: #1d4ed8;
+}
+
+.modal button.cancel {
+  background-color: #e5e7eb;
+  color: #111827;
+}
+
+.modal button.cancel:hover {
+  background-color: #d1d5db;
+}
+
+/* ========= RESPONSIVE BREAKPOINTS ========= */
+
+/* ≤ 1200px (large laptops/tablets) */
+@media (max-width: 1200px) {
+  .dashboard-header {
+    max-width: 95%;
+    padding: 1rem;
+  }
+
+  .incident-card {
+    max-width: 90%;
+  }
+}
+
+/* ≤ 750px (small laptops/tablets) */
+@media (max-width: 750px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .submit-btn {
+    align-self: flex-end;
+    margin-top: 0.5rem;
+  }
+
+  .modal {
+    width: 95%;
+    padding: 1.5rem;
+  }
+}
+
+/* ≤ 600px (mobile phones) */
+@media (max-width: 600px) {
+  .dashboard-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .submit-btn,
+  .modal button {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .modal input,
+  .modal textarea {
+    font-size: 0.95rem;
+  }
+
+  .modal {
+    padding: 1rem;
+  }
 }

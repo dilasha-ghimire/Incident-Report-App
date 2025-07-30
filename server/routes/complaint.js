@@ -1,15 +1,27 @@
 const express = require("express");
 const router = express.Router();
+const csrf = require("csurf");
+
 const {
   createComplaint,
   getUserComplaints,
   updateComplaint,
 } = require("../controllers/complaintController");
+
 const { protect } = require("../middleware/authMiddleware");
 const upload = require("../middleware/upload");
 
-router.post("/", protect, upload.single("image"), createComplaint);
-router.get("/", protect, getUserComplaints);
-router.patch("/:id", protect, upload.single("image"), updateComplaint);
+const csrfProtection = csrf({ cookie: true });
+
+const uploadWithCSRF = [
+  upload.single("image"),
+  (req, res, next) => {
+    csrfProtection(req, res, next);
+  },
+];
+
+router.post("/", protect, ...uploadWithCSRF, createComplaint);
+router.patch("/:id", protect, ...uploadWithCSRF, updateComplaint);
+router.get("/", protect, csrfProtection, getUserComplaints);
 
 module.exports = router;

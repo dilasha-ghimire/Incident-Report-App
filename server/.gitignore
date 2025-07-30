@@ -7,3 +7,5 @@ npm-debug.log*
 
 # misc
 .DS_Store
+
+uploads/
