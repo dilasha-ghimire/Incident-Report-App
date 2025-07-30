@@ -7,6 +7,10 @@ const csrf = require("csurf");
 const sanitizeInputs = require("./middleware/sanitize");
 const helmet = require("helmet");
 
+const fs = require("fs");
+const path = require("path");
+const https = require("https");
+
 const authRoutes = require("./routes/auth");
 const complaintRoutes = require("./routes/complaint");
 const adminRoutes = require("./routes/admin");
@@ -18,8 +22,8 @@ app.use(helmet());
 
 const allowedOrigins = [
   process.env.CLIENT_URL,
-  "http://localhost:5173",
-  "http://127.0.0.1:5173",
+  "https://localhost:5173",
+  "https://127.0.0.1:5173",
 ];
 
 const corsOptions = {
@@ -48,7 +52,7 @@ app.use((req, res, next) => {
     const token = req.csrfToken();
     res.cookie("XSRF-TOKEN", token, {
       httpOnly: false,
-      secure: false,
+      secure: true,
       sameSite: "Strict",
     });
   } catch (err) {}
@@ -64,9 +68,16 @@ app.use("/api/auth", authRoutes);
 app.use("/api/complaints", complaintRoutes);
 app.use("/api/admin", adminRoutes);
 
-app.get("/", (req, res) => res.send("Server running"));
+app.get("/", (req, res) => res.send("Server running securely over HTTPS"));
+
+// ===== HTTPS Server =====
+const sslOptions = {
+  key: fs.readFileSync(path.join(__dirname, "../ssl/key.pem")),
+  cert: fs.readFileSync(path.join(__dirname, "../ssl/cert.pem")),
+};
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on http://0.0.0.0:${PORT}`);
+
+https.createServer(sslOptions, app).listen(PORT, () => {
+  console.log(`✅ HTTPS server running at https://localhost:${PORT}`);
 });

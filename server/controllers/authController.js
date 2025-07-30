@@ -133,7 +133,7 @@ exports.verifyLoginOTP = async (req, res) => {
 
   res.cookie("token", token, {
     httpOnly: true,
-    secure: false, // ❌ Only set to true when using HTTPS
+    secure: true,
     sameSite: "Strict",
     maxAge: 24 * 60 * 60 * 1000, // 1 day
   });
@@ -164,7 +164,7 @@ exports.logoutUser = (req, res) => {
   logger.info(`LOGOUT: ${req.user?.username || "Unknown"}`);
   res.clearCookie("token", {
     httpOnly: true,
-    secure: false, // or true in production
+    secure: true,
     sameSite: "Strict",
   });
   res.json({ message: "Logged out" });
