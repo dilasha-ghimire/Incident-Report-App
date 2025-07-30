@@ -40,7 +40,7 @@ router.post("/verify-email", verifyEmail);
 router.post("/login", loginRateLimiter, loginUser);
 router.post("/verify-login-otp", verifyLoginOTP);
 router.get("/me", protect, getMe);
-router.post("/logout", logoutUser);
+router.post("/logout", protect, logoutUser);
 router.put("/update-profile", protect, updateProfile);
 router.put("/change-password", protect, changePassword);
 
