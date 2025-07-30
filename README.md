@@ -37,23 +37,6 @@ This repository contains the **Incident Report App**, a robust MERN-stack applic
 
 ## 🔒 Security Features
 
-### 🔑 Password Security
-
-- Enforced minimum password length and complexity (e.g., uppercase, lowercase, number, symbol).
-- Prevention of password reuse to encourage unique credentials.
-- Passwords are hashed using **bcrypt** before storage.
-- Authentication system uses **JWT** with access and refresh tokens for secure sessions.
-
-### 🛡 Other Measures
-
-- Input validation and sanitization to prevent injection attacks.
-- HTTP headers hardened using Helmet (if implemented).
-- Environment variables securely managed via `.env` files.
-
----
-
-## ✅ Features Implemented
-
 ### 🔐 User Registration & Authentication
 
 - Email format validation
