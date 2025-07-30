@@ -206,7 +206,7 @@ exports.changePassword = async (req, res) => {
     !/[A-Z]/.test(newPassword) ||
     !/[a-z]/.test(newPassword) ||
     !/[0-9]/.test(newPassword) ||
-    !/[!@#$%^&*()_+\-=[\]{};':\"\\|,.<>/?]/.test(newPassword);
+    !/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(newPassword);
 
   if (isWeak) {
     return res.status(400).json({
@@ -215,13 +215,23 @@ exports.changePassword = async (req, res) => {
     });
   }
 
-  const isSame = await bcrypt.compare(newPassword, user.password);
-  if (isSame)
-    return res
-      .status(400)
-      .json({ error: "New password cannot be same as current" });
+  const allHashes = [user.password, ...(user.previousPasswords || [])];
+  for (const hash of allHashes) {
+    const reused = await bcrypt.compare(newPassword, hash);
+    if (reused) {
+      return res
+        .status(400)
+        .json({ error: "You cannot reuse any of your last 5 passwords." });
+    }
+  }
 
-  user.password = await bcrypt.hash(newPassword, 10);
+  const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+  user.previousPasswords = [
+    user.password,
+    ...(user.previousPasswords || []),
+  ].slice(0, 5);
+  user.password = hashedNewPassword;
+
   await user.save();
 
   res.json({ message: "Password changed successfully" });

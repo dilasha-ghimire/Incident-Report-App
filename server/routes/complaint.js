@@ -24,17 +24,19 @@ const uploadWithCSRF = [
 router.post(
   "/",
   protect,
-  validateComplaint,
   ...uploadWithCSRF,
+  validateComplaint,
   createComplaint
 );
+
 router.patch(
   "/:id",
   protect,
-  validateComplaint,
   ...uploadWithCSRF,
+  validateComplaint,
   updateComplaint
 );
+
 router.get("/", protect, csrfProtection, getUserComplaints);
 
 module.exports = router;
