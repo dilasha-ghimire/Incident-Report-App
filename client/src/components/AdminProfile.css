@@ -1,0 +1,103 @@
+.adminprofile-container {
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(to right, #f0f4ff, #e0edff);
+  min-height: 100vh;
+  padding: 3rem 1.5rem;
+}
+
+.adminprofile-card {
+  background: white;
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.adminprofile-card p {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+}
+
+.adminprofile-card button {
+  margin-right: 1rem;
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  background-color: #1e40af;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.adminprofile-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.45);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.adminprofile-modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.adminprofile-modal h3 {
+  margin-top: 0;
+  color: #1e3a8a;
+}
+
+.adminprofile-modal label {
+  font-weight: 600;
+  display: block;
+  margin-top: 1rem;
+}
+
+.adminprofile-modal input {
+  width: 95%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-top: 0.3rem;
+}
+
+.adminprofile-modal button {
+  margin-top: 1.2rem;
+  margin-right: 0.5rem;
+  padding: 0.6rem 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  background-color: #1e3a8a;
+  color: white;
+  cursor: pointer;
+}
+
+.adminprofile-password-input {
+  position: relative;
+}
+
+.adminprofile-password-input input {
+  width: 90%;
+  padding-right: 2rem;
+}
+
+.adminprofile-password-input span {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.2rem;
+}

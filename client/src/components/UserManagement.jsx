@@ -8,6 +8,7 @@ const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [editUser, setEditUser] = useState(null);
+  const [userToDelete, setUserToDelete] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
 
@@ -29,12 +30,12 @@ const UserManagement = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this user?")) return;
     try {
       await api.delete(`/api/admin/users/${id}`, {
         withCredentials: true,
         headers: { "X-XSRF-TOKEN": getCookie("XSRF-TOKEN") },
       });
+      setUserToDelete(null);
       fetchUsers();
     } catch {
       alert("Delete failed");
@@ -74,7 +75,7 @@ const UserManagement = () => {
 
   return (
     <div className="adminuser-container">
-      {/* Header/Menu from AdminDashboard.css */}
+      {/* Header */}
       <div className="admindashboard-header">
         <h2 style={{ flex: 1, textAlign: "left" }}>User Management</h2>
         <div className="admindashboard-menu">
@@ -109,7 +110,7 @@ const UserManagement = () => {
         />
       </div>
 
-      {/* Table */}
+      {/* User Table */}
       <div className="adminuser-table-wrapper">
         <table className="adminuser-table">
           <thead>
@@ -128,7 +129,7 @@ const UserManagement = () => {
                 <td>{user.role}</td>
                 <td>
                   <button onClick={() => setEditUser(user)}>Edit</button>
-                  <button onClick={() => handleDelete(user._id)}>Delete</button>
+                  <button onClick={() => setUserToDelete(user)}>Delete</button>
                 </td>
               </tr>
             ))}
@@ -179,6 +180,26 @@ const UserManagement = () => {
             </select>
             <button onClick={handleSave}>Save</button>
             <button onClick={() => setEditUser(null)}>Cancel</button>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {userToDelete && (
+        <div
+          className="adminuser-modal-overlay"
+          onClick={() => setUserToDelete(null)}
+        >
+          <div className="adminuser-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Confirm Deletion</h3>
+            <p>
+              Are you sure you want to delete{" "}
+              <strong>{userToDelete.username}</strong>?
+            </p>
+            <button onClick={() => handleDelete(userToDelete._id)}>
+              Yes, Delete
+            </button>
+            <button onClick={() => setUserToDelete(null)}>Cancel</button>
           </div>
         </div>
       )}

@@ -7,6 +7,7 @@ import UserDashboard from "./components/UserDashboard";
 import UserProfile from "./components/UserProfile";
 import AdminDashboard from "./components/AdminDashboard";
 import UserManagement from "./components/UserManagement";
+import AdminProfile from "./components/AdminProfile";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/users" element={<UserManagement />} />
+        <Route path="/admin/profile" element={<AdminProfile />} />
       </Routes>
     </Router>
   );
