@@ -5,6 +5,7 @@ require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const csrf = require("csurf");
 const sanitizeInputs = require("./middleware/sanitize");
+const helmet = require("helmet");
 
 const authRoutes = require("./routes/auth");
 const complaintRoutes = require("./routes/complaint");
@@ -13,6 +14,7 @@ const adminRoutes = require("./routes/admin");
 const app = express();
 app.use(express.json());
 app.use(sanitizeInputs);
+app.use(helmet());
 
 const allowedOrigins = [
   process.env.CLIENT_URL,
