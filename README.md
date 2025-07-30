@@ -145,11 +145,3 @@ Runs on:
 🌐 http://localhost:5173
 
 ---
-
-## 🔐 Authentication & Roles
-
-- **JWT-based** secure login with token refresh system.
-- Roles: `employee` and `admin` for controlled access.
-- Middleware ensures secure routes and resource protection.
-
----
