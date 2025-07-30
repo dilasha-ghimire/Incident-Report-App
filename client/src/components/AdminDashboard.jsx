@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api";
 import "./AdminDashboard.css";
 
@@ -7,6 +8,10 @@ const AdminDashboard = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterUser, setFilterUser] = useState("");
   const [searchTitle, setSearchTitle] = useState("");
+  const [showMenu, setShowMenu] = useState(false);
+  const [selectedComplaint, setSelectedComplaint] = useState(null);
+
+  const navigate = useNavigate();
 
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -43,6 +48,27 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleLogout = async () => {
+    const xsrfToken = document.cookie
+      .split("; ")
+      .find((c) => c.startsWith("XSRF-TOKEN="))
+      ?.split("=")[1];
+
+    try {
+      await api.post(
+        "/api/auth/logout",
+        {},
+        {
+          withCredentials: true,
+          headers: { "X-XSRF-TOKEN": xsrfToken },
+        }
+      );
+      navigate("/login");
+    } catch {
+      alert("Logout failed");
+    }
+  };
+
   useEffect(() => {
     fetchReports();
   }, []);
@@ -63,7 +89,27 @@ const AdminDashboard = () => {
   return (
     <div className="admindashboard-container">
       <div className="admindashboard-header">
-        <h2>Admin Dashboard</h2>
+        <h2 style={{ flex: 1, textAlign: "left" }}>Admin Dashboard</h2>
+        <div className="admindashboard-menu">
+          <button
+            className="admindashboard-menu-btn"
+            onClick={() => setShowMenu(!showMenu)}
+          >
+            ☰
+          </button>
+          {showMenu && (
+            <div className="admindashboard-dropdown">
+              <div onClick={() => navigate("/admin/dashboard")}>
+                Admin Dashboard
+              </div>
+              <div onClick={() => navigate("/admin/users")}>
+                User Management
+              </div>
+              <div onClick={() => navigate("/admin/profile")}>Profile</div>
+              <div onClick={handleLogout}>Logout</div>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="admindashboard-filters">
@@ -107,7 +153,7 @@ const AdminDashboard = () => {
                 <td>{r.title}</td>
                 <td>{r.user?.username || "N/A"}</td>
                 <td>{r.status}</td>
-                <td>{new Date(r.createdAt).toLocaleString()}</td>
+                <td>{new Date(r.createdAt).toLocaleDateString()}</td>
                 <td>
                   <select
                     value={r.status}
@@ -120,6 +166,12 @@ const AdminDashboard = () => {
                       </option>
                     ))}
                   </select>
+                  <button
+                    className="admindashboard-view-btn"
+                    onClick={() => setSelectedComplaint(r)}
+                  >
+                    View Complaint
+                  </button>
                 </td>
               </tr>
             ))}
@@ -133,6 +185,35 @@ const AdminDashboard = () => {
           </tbody>
         </table>
       </div>
+
+      {selectedComplaint && (
+        <div
+          className="admindashboard-modal-overlay"
+          onClick={() => setSelectedComplaint(null)}
+        >
+          <div
+            className="admindashboard-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3>{selectedComplaint.title}</h3>
+            <p>
+              <strong>Type:</strong> {selectedComplaint.type || "N/A"}
+            </p>
+            <p>
+              <strong>Status:</strong> {selectedComplaint.status}
+            </p>
+            <p>
+              <strong>Submitted by:</strong>{" "}
+              {selectedComplaint.user?.username || "N/A"}
+            </p>
+            <p>
+              <strong>Description:</strong>
+            </p>
+            <p>{selectedComplaint.description}</p>
+            <button onClick={() => setSelectedComplaint(null)}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

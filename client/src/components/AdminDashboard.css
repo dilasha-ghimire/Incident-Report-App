@@ -9,6 +9,9 @@
 }
 
 .admindashboard-header {
+  display: flex; /* 🛠 Makes children align horizontally */
+  justify-content: space-between; /* 🛠 Pushes title left, menu right */
+  align-items: center; /* 🛠 Vertically center items */
   background: white;
   padding: 1.5rem 2rem;
   border-radius: 10px;
@@ -88,6 +91,112 @@
   color: #1e3a8a;
   width: 100%;
   max-width: 200px;
+}
+
+.admindashboard-menu {
+  position: relative;
+}
+
+.admindashboard-menu-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #1e3a8a;
+  padding: 0.2rem 0.6rem;
+}
+
+.admindashboard-dropdown {
+  position: absolute;
+  top: 2.2rem;
+  right: 0;
+  background: white;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 999;
+  min-width: 180px;
+}
+
+.admindashboard-dropdown div {
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  color: #1e3a8a;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: white;
+}
+
+.admindashboard-dropdown div:hover {
+  background-color: #e0ecff;
+}
+
+.admindashboard-dropdown div:last-child {
+  border-bottom: none;
+}
+
+.admindashboard-view-btn {
+  margin-top: 0.5rem;
+  background-color: #1e40af;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  width: 100%;
+  max-width: 200px;
+}
+
+.admindashboard-view-btn:hover {
+  background-color: #1e3a8a;
+}
+
+.admindashboard-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.admindashboard-modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+.admindashboard-modal h3 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: #1e3a8a;
+}
+
+.admindashboard-modal p {
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+  color: #1f2937;
+}
+
+.admindashboard-modal button {
+  margin-top: 1rem;
+  background-color: #1e3a8a;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
