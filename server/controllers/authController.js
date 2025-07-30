@@ -143,15 +143,19 @@ exports.verifyLoginOTP = async (req, res) => {
   });
 };
 
-exports.getMe = (req, res) => {
+exports.getMe = async (req, res) => {
   if (!req.user) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
+  const user = await User.findById(req.user.id).select("username email role");
+  if (!user) return res.status(404).json({ error: "User not found" });
+
   res.json({
-    id: req.user.id,
-    username: req.user.username,
-    role: req.user.role,
+    id: user._id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
   });
 };
 
@@ -162,4 +166,63 @@ exports.logoutUser = (req, res) => {
     sameSite: "Strict",
   });
   res.json({ message: "Logged out" });
+};
+
+exports.updateProfile = async (req, res) => {
+  const { username, email } = req.body;
+
+  if (!username || !email)
+    return res.status(400).json({ error: "Username and email are required" });
+
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    user.username = username;
+    user.email = email;
+    await user.save();
+
+    res.json({ message: "Profile updated successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update profile" });
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword)
+    return res.status(400).json({ error: "Both passwords are required" });
+
+  const user = await User.findById(req.user.id);
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  const isMatch = await bcrypt.compare(currentPassword, user.password);
+  if (!isMatch)
+    return res.status(401).json({ error: "Current password is incorrect" });
+
+  const isWeak =
+    newPassword.length < 8 ||
+    !/[A-Z]/.test(newPassword) ||
+    !/[a-z]/.test(newPassword) ||
+    !/[0-9]/.test(newPassword) ||
+    !/[!@#$%^&*()_+\-=[\]{};':\"\\|,.<>/?]/.test(newPassword);
+
+  if (isWeak) {
+    return res.status(400).json({
+      error:
+        "New password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
+    });
+  }
+
+  const isSame = await bcrypt.compare(newPassword, user.password);
+  if (isSame)
+    return res
+      .status(400)
+      .json({ error: "New password cannot be same as current" });
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  await user.save();
+
+  res.json({ message: "Password changed successfully" });
 };

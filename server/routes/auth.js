@@ -12,6 +12,8 @@ const {
   verifyLoginOTP,
   getMe,
   logoutUser,
+  updateProfile,
+  changePassword,
 } = require("../controllers/authController");
 
 router.post(
@@ -39,5 +41,7 @@ router.post("/login", loginRateLimiter, loginUser);
 router.post("/verify-login-otp", verifyLoginOTP);
 router.get("/me", protect, getMe);
 router.post("/logout", logoutUser);
+router.put("/update-profile", protect, updateProfile);
+router.put("/change-password", protect, changePassword);
 
 module.exports = router;

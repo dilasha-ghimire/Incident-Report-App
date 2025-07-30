@@ -8,6 +8,8 @@ const UserDashboard = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
   const [complaints, setComplaints] = useState([]);
+  const [filter, setFilter] = useState("All");
+  const [showFilter, setShowFilter] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [formData, setFormData] = useState({
@@ -28,7 +30,13 @@ const UserDashboard = () => {
   const fetchComplaints = () => {
     api
       .get("/api/complaints", { withCredentials: true })
-      .then((res) => setComplaints(res.data))
+      .then((res) => {
+        if (filter === "All") {
+          setComplaints(res.data);
+        } else {
+          setComplaints(res.data.filter((c) => c.status === filter));
+        }
+      })
       .catch(() => setComplaints([]));
   };
 
@@ -123,6 +131,12 @@ const UserDashboard = () => {
     setShowModal(true);
   };
 
+  const handleFilterChange = (status) => {
+    setFilter(status);
+    setShowFilter(false);
+    fetchComplaints();
+  };
+
   const handleLogout = async () => {
     const xsrfToken = document.cookie
       .split("; ")
@@ -163,8 +177,8 @@ const UserDashboard = () => {
         <div className={`alert-${alert.type} alert-popup`}>{alert.message}</div>
       )}
 
-      <main className="dashboard-main">
-        <div className="dashboard-header">
+      <main className="dashboard-main" style={{ padding: "1rem 2rem" }}>
+        <div className="dashboard-header" style={{ marginBottom: "1rem" }}>
           <h1>User Dashboard</h1>
           <button
             className="submit-btn"
@@ -222,7 +236,7 @@ const UserDashboard = () => {
                 <img
                   src={formData.previewImage}
                   alt="preview"
-                  style={{ maxWidth: "100%" }}
+                  style={{ maxWidth: "100%", marginBottom: "1rem" }}
                 />
                 {isEditable && (
                   <p
@@ -231,9 +245,10 @@ const UserDashboard = () => {
                       color: "#2563eb",
                       textDecoration: "underline",
                       cursor: "pointer",
+                      marginTop: "0.5rem",
                     }}
                   >
-                    Remove Image
+                    ❌ Remove Image
                   </p>
                 )}
               </div>
@@ -251,7 +266,66 @@ const UserDashboard = () => {
           </div>
         )}
 
-        <h2>📋 My Incidents</h2>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            position: "relative",
+            padding: "0 0.5rem",
+          }}
+        >
+          <h2>📋 My Incidents</h2>
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => setShowFilter((prev) => !prev)}
+              style={{
+                backgroundColor: "#2563eb",
+                color: "white",
+                padding: "0.5rem 1.2rem",
+                borderRadius: "6px",
+                border: "none",
+                cursor: "pointer",
+                fontWeight: "500",
+                fontSize: "0.9rem",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+              }}
+            >
+              Filter ▾
+            </button>
+            {showFilter && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "110%",
+                  right: 0,
+                  background: "#fff",
+                  border: "1px solid #ccc",
+                  borderRadius: "6px",
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                  padding: "0.5rem",
+                  zIndex: 999,
+                }}
+              >
+                {["All", "Pending", "In Progress", "Resolved", "Rejected"].map(
+                  (status) => (
+                    <div
+                      key={status}
+                      onClick={() => handleFilterChange(status)}
+                      style={{
+                        padding: "0.4rem 0.8rem",
+                        cursor: "pointer",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {status}
+                    </div>
+                  )
+                )}
+              </div>
+            )}
+          </div>
+        </div>
         <div className="incident-list">
           {complaints.map((c) => (
             <div key={c._id} className="incident-card">
@@ -284,7 +358,7 @@ const UserDashboard = () => {
                   style={{
                     display: "flex",
                     justifyContent: "flex-end",
-                    marginBottom: "1rem",
+                    marginTop: "1rem",
                   }}
                 >
                   <button onClick={() => handleViewMore(c)}>View More</button>

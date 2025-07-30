@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Homepage.css";
 
 const Homepage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.has("token")) {
+      params.delete("token");
+      navigate({ pathname: "/", search: params.toString() }, { replace: true });
+    }
+  }, [location, navigate]);
 
   const images = [
     "/homepage-illustration-1.png",
