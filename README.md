@@ -15,7 +15,7 @@ This repository contains the **Incident Report App**, a robust MERN-stack applic
 ### 🛠 Admin Dashboard:
 
 - View all submitted reports in tabular or filtered format.
-- Update report status (e.g., "Pending", "Under Review", "Resolved").
+- Update report status (e.g., "Pending", "In Progress", "Resolved", "Rejected").
 - View user information in tabular format.
 
 ---
